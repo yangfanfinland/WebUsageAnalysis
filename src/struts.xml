@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC  
+    "-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"  
+    "http://struts.apache.org/dtds/struts-2.3.dtd">
+<struts>
+    
+    <constant name="struts.objectFactory" value="spring" />  
+    <constant name="struts.objectFactory.spring.autoWire.alwaysRespect" value="true"/>  
+    
+    
+    <!-- control center management -->
+    <package name="control" namespace="/control/center" extends="struts-default">
+        <action name="main">
+            <result name="success">/WEB-INF/page/controlcenter/default.jsp</result>
+        </action>
+        <action name="top">
+            <result name="success">/WEB-INF/page/controlcenter/top.jsp</result>
+        </action>
+        <action name="menu">
+            <result name="success">/WEB-INF/page/controlcenter/menu.jsp</result>
+        </action>
+        <action name="right" class="chartDateServerList">
+            <result name="success">/WEB-INF/page/controlcenter/right.jsp</result>
+        </action>
+        <action name="end">
+            <result name="success">/WEB-INF/page/controlcenter/end.jsp</result>
+        </action>
+    </package>
+    
+    <!-- Branch company management  -->
+    <package name="branchmanagement" namespace="/control/branch" extends="struts-default">
+        
+        <global-results>
+    	    <result name="globalmessage">/WEB-INF/page/share/message.jsp</result>
+    	</global-results>
+        
+        <action name="list" class="branchList">
+        	<result name="success">/WEB-INF/page/branch/branchlist.jsp</result>
+        </action>
+        <action name="branch_addUI" class="branchmanage" method="addUI">
+        	<result name="success">/WEB-INF/page/branch/addbranch.jsp</result>
+        </action>
+        <action name="add_branch" class="branchmanage" method="add">
+        	<result name="message">/WEB-INF/page/share/message.jsp</result>
+        </action>
+        <action name="branch_editUI" class="branchmanage" method="editUI">
+        	<result name="success">/WEB-INF/page/branch/editbranch.jsp</result>
+        </action>
+        <action name="edit_branch" class="branchmanage" method="edit">
+        	<result name="message">/WEB-INF/page/share/message.jsp</result>
+        </action>
+        <action name="delete_branch" class="branchmanage" method="delete">
+        	<result name="message">/WEB-INF/page/share/message.jsp</result>
+        </action>
+    </package>
+    
+    <!-- employee management  -->
+    <package name="employeemanagement" namespace="/control/employee" extends="struts-default">
+        
+        <global-results>
+    	    <result name="globalmessage">/WEB-INF/page/share/message.jsp</result>
+    	</global-results>
+        
+        <action name="list" class="employeeList">
+        	<result name="success">/WEB-INF/page/branch/employeelist.jsp</result>
+        </action>
+        <action name="regEmployeeUI" class="employeemanage" method="regEmployeeUI">
+        	<result name="success">/WEB-INF/page/branch/addemployee.jsp</result>
+        </action>
+        <action name="regEmployee" class="employeemanage" method="regEmployee">
+            <interceptor-ref name="fileUpload">
+                <param name="allowedTypes">image/bmp,image/png,image/gif,image/jpeg,image/jpg</param>
+                <param name="maximumSize">1025956</param>
+            </interceptor-ref>
+            <interceptor-ref name="defaultStack"/>
+        	<result name="message">/WEB-INF/page/share/message.jsp</result>
+        	<result name="input">/WEB-INF/page/share/img_error.jsp</result>
+        </action>
+        <action name="exist" class="employeemanage" method="exist">
+        	<result name="message">/WEB-INF/page/branch/usernameIsExsit.jsp</result>
+        </action> 
+        <action name="editEmployeeUI" class="employeemanage" method="editEmployeeUI">
+        	<result name="success">/WEB-INF/page/branch/editemployee.jsp</result>
+        </action>
+        <action name="editEmployee" class="employeemanage" method="editEmployee">
+            <interceptor-ref name="fileUpload">
+                <param name="allowedTypes">image/bmp,image/png,image/gif,image/jpeg,image/jpg</param>
+                <param name="maximumSize">1025956</param>
+            </interceptor-ref>
+            <interceptor-ref name="defaultStack"/>
+        	<result name="message">/WEB-INF/page/share/message.jsp</result>
+        	<result name="input">/WEB-INF/page/share/img_error.jsp</result>
+        </action>
+        <action name="leave" class="employeemanage" method="leave">
+        	<result name="message">/WEB-INF/page/share/message.jsp</result>
+        </action>
+        <action name="query" class="employeemanage" method="query">
+        	<result name="success">/WEB-INF/page/branch/query.jsp</result>
+        </action>
+        <action name="privilegeGroupSetUI" class="employeemanage" method="privilegeGroupSetUI">
+        	<result name="success">/WEB-INF/page/branch/privilegeSet.jsp</result>
+        </action>
+        <action name="privilegeGroupSet" class="employeemanage" method="privilegeGroupSet">
+        	<result name="message">/WEB-INF/page/share/message.jsp</result>
+        </action>        
+    </package>
+    
+    <!-- employee login -->
+    <package name="employeelogin" namespace="/employee" extends="struts-default">
+        <action name="logonUI">
+        	<result name="success">/WEB-INF/page/branch/logon.jsp</result>
+        </action>
+        <action name="logon" class="employeelogon" >
+        	<result name="message">/WEB-INF/page/branch/logon.jsp</result>
+        	<result name="control" type="redirect">/control/center/main.action</result>
+        </action>
+        <action name="logout" class="employeelogout" >
+        	<result name="success" type="redirect">/employee/logonUI.action</result>
+        </action>
+    </package>
+    
+
+    
+    
+   <package name="systemInitializaiton" namespace="/system" extends="struts-default">
+        <action name="init" class="systemInit">  
+    		<result name="success">/WEB-INF/page/share/message.jsp</result>
+		</action>
+    </package>
+    
+	<!-- Privilege Management -->
+    <package name="privilegeGroup" namespace="/control/privilegegroup" extends="struts-default">
+        
+        <global-results>
+    	    <result name="globalmessage">/WEB-INF/page/share/message.jsp</result>
+    	</global-results>
+        
+        <action name="list" class="privilegeGroupList">
+        	<result name="success">/WEB-INF/page/branch/privilegegrouplist.jsp</result>
+        </action>
+        <action name="addUI" class="privilegeGroupmanage" method="addUI">
+        	<result name="success">/WEB-INF/page/branch/addprivilegegroup.jsp</result>
+        </action>
+        <action name="add" class="privilegeGroupmanage" method="add">
+        	<result name="message">/WEB-INF/page/share/message.jsp</result>
+        </action>
+        <action name="editUI" class="privilegeGroupmanage" method="editUI">
+        	<result name="success">/WEB-INF/page/branch/editprivilegegroup.jsp</result>
+        </action>
+        <action name="edit" class="privilegeGroupmanage" method="edit">
+        	<result name="message">/WEB-INF/page/share/message.jsp</result>
+        </action>
+        <action name="delete" class="privilegeGroupmanage" method="delete">
+        	<result name="message">/WEB-INF/page/share/message.jsp</result>
+        </action>
+    </package>
+    
+    <!-- Upload File Management -->
+    <package name="upload" namespace="/control/uploadfile" extends="struts-default">
+        
+        <global-results>
+    	    <result name="globalmessage">/WEB-INF/page/share/message.jsp</result>
+    	</global-results>
+        
+        <action name="uploadpage" class="uploadfilemanage" method="uploadUI">
+        	<result name="success">/WEB-INF/page/uploadfile/upload.jsp</result>
+        </action>
+        <action name="upload" class="uploadfilemanage" method="upload">
+            <interceptor-ref name="fileUpload">
+                <param name="allowedTypes">image/bmp,image/png,image/gif,image/jpeg,image/jpg,
+                    application/x-shockwave-flash,application/msword,application/octet-stream,
+                    application/pdf,text/plain,application/vnd.ms-excel,application/vnd.ms-powerpoint</param>
+                <param name="maximumSize">1025956</param>
+            </interceptor-ref>
+            <interceptor-ref name="defaultStack"/>
+        	<result name="message">/WEB-INF/page/share/message.jsp</result>
+        	<result name="input">/WEB-INF/page/share/file_error.jsp</result>
+        </action>
+        <action name="list" class="uploadfile" method="execute">
+        	<result name="success">/WEB-INF/page/uploadfile/uploadfilelist.jsp</result>
+        </action>
+        <action name="delete" class="uploadfilemanage" method="delete">
+        	<result name="message">/WEB-INF/page/share/message.jsp</result>
+        </action>
+    </package>
+  
+    
+    
+    <!-- Chart Data management  -->
+    <package name="chartDataServermanagement" namespace="/control/analysis" extends="struts-default">
+        
+        <global-results>
+    	    <result name="globalmessage">/WEB-INF/page/share/message.jsp</result>
+    	</global-results>
+        
+        <action name="list" class="chartDateServerList">
+        	<result name="success">/WEB-INF/page/chartdataanalysis/serverlist.jsp</result>
+        </action>
+       
+        <action name="server_addUI" class="chartDateServerManage" method="addUI">
+        	<result name="success">/WEB-INF/page/chartdataanalysis/addserver.jsp</result>
+        </action>
+        
+        <action name="add_server" class="chartDateServerManage" method="add">
+        	<result name="message">/WEB-INF/page/share/message.jsp</result>
+        </action>
+  
+        <action name="server_editUI" class="chartDateServerManage" method="editUI">
+        	<result name="success">/WEB-INF/page/chartdataanalysis/editserver.jsp</result>
+        </action>
+
+        <action name="edit_server" class="chartDateServerManage" method="edit">
+        	<result name="message">/WEB-INF/page/share/message.jsp</result>
+        </action>
+
+        <action name="delete_server" class="chartDateServerManage" method="delete">
+        	<result name="message">/WEB-INF/page/share/message.jsp</result>
+        </action>
+    </package>
+    
+        
+    <package name="chartdata" namespace="/control/center" extends="json-default">
+        
+        <global-results>
+    	    <result name="globalmessage">/WEB-INF/page/share/message.jsp</result>
+    	</global-results>
+        
+        <action name="testAction" class="chartdatamanage">  
+    		<result name="success">/WEB-INF/page/controlcenter/right.jsp</result>
+		</action>  
+		
+        <action name="testAction2" class="chartdatamanage" method="getSeverByCategory">  
+    		<result name="success">/WEB-INF/page/controlcenter/right.jsp</result>
+		</action>  
+    </package>
+</struts>

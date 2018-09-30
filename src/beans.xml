@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:aop="http://www.springframework.org/schema/aop" 
+    xmlns:tx="http://www.springframework.org/schema/tx"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans 
+    	http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context 
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+	<aop:aspectj-autoproxy/>
+	<aop:config proxy-target-class="true"/>
+    <context:component-scan base-package="com.lumiinsight"/>
+    <context:property-placeholder location="classpath:jdbc.properties" />
+    
+    <!-- configure database connection pool of c3p0 -->  
+    <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">  
+        <property name="driverClass" value="com.mysql.jdbc.Driver"></property>  
+        <property name="jdbcUrl" value="${jdbc.url}"></property>  
+        <property name="user" value="${jdbc.username}"></property>  
+        <property name="password" value="${jdbc.password}"></property>  
+        <property name="maxPoolSize" value="40"></property>  
+        <property name="minPoolSize" value="1"></property>  
+        <property name="initialPoolSize" value="1"></property>  
+        <property name="maxIdleTime" value="20"></property>  
+    </bean>
+    
+    <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+     	<property name="dataSource" ref="dataSource"></property>
+     	<property name="persistenceXmlLocation" value="classpath:META-INF/persistence.xml"></property>
+     	<property name="loadTimeWeaver">
+     	    <bean class="org.springframework.instrument.classloading.InstrumentationLoadTimeWeaver"></bean>
+     	</property>
+     </bean>
+     
+     <!-- configure transaction manager -->
+     <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+         <property name="dataSource" ref="dataSource" /> 
+         <property name="entityManagerFactory" ref="entityManagerFactory"></property>
+     </bean>
+     
+     <!-- Activates @Transaction for DefaultImageDatabase -->
+     <tx:annotation-driven transaction-manager="transactionManager"/>
+     
+     
+     
+     
+     
+     
+     
+    <!-- Scheduler task -->
+   	<bean name="schedulerTask" class="com.lumiinsight.quartz.SchedulerTask" />
+   	<!-- Scheduler job -->
+   	<bean name="schedulerJob" class="org.springframework.scheduling.quartz.JobDetailBean">
+    	<property name="jobClass" value="com.lumiinsight.quartz.SchedulerJob" />
+     	<property name="jobDataAsMap">
+			<map>
+	    		<entry key="schedulerTask" value-ref="schedulerTask" />
+	 		</map>
+      	</property>
+   	</bean>
+   	<!-- Cron Trigger -->
+  	<bean id="cronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="schedulerJob" />
+		<property name="cronExpression" value="1 0 0 * * ? " />
+	</bean>
+  	<!-- Scheduler -->
+   	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="jobDetails">
+	   		<list>
+	      		<ref bean="schedulerJob" />
+	   		</list>
+		</property>
+		<property name="triggers">
+	    	<list>
+				<ref bean="cronTrigger" />
+	    	</list>
+		</property>
+   	</bean>
+   	
+   	
+   	
+   	
+   	
+   	
+   	
+   	
+   	<!-- SendRequestUpdateData task -->
+   	<bean name="sendRequestUpdateDataTask" class="com.lumiinsight.quartz.SendRequestUpdateDataTask" />
+   	<!-- Scheduler job -->
+   	<bean name="sendRequestUpdateDataJob" class="org.springframework.scheduling.quartz.JobDetailBean">
+    	<property name="jobClass" value="com.lumiinsight.quartz.SendRequestUpdateDataJob" />
+     	<property name="jobDataAsMap">
+			<map>
+	    		<entry key="sendRequestUpdateDataTask" value-ref="sendRequestUpdateDataTask" />
+	 		</map>
+      	</property>
+   	</bean>
+   	<!-- Cron Trigger -->
+  	<bean id="cronTrigger2" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="sendRequestUpdateDataJob" />
+		<property name="cronExpression" value="0 59 * * * ? " />
+	</bean>
+  	<!-- Scheduler -->
+   	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="jobDetails">
+	   		<list>
+	      		<ref bean="sendRequestUpdateDataJob" />
+	   		</list>
+		</property>
+		<property name="triggers">
+	    	<list>
+				<ref bean="cronTrigger2" />
+	    	</list>
+		</property>
+   	</bean>
+  	
+  	
+  	
+  	
+     
+	<bean id="branchList" class="com.lumiinsight.web.action.privilege.BranchListAction" scope="prototype"></bean>
+	<bean id="branchmanage" class="com.lumiinsight.web.action.privilege.BranchManageAction" scope="prototype"></bean>
+	<bean id="employeeList" class="com.lumiinsight.web.action.privilege.EmployeeListAction" scope="prototype"></bean>
+	<bean id="employeemanage" class="com.lumiinsight.web.action.privilege.EmployeeManageAction" scope="prototype"></bean>
+	<bean id="employeelogon" class="com.lumiinsight.web.action.privilege.EmployeeLogonAction" scope="prototype"></bean>
+	<bean id="employeelogout" class="com.lumiinsight.web.action.privilege.EmployeeLogouAction" scope="prototype"></bean>
+	<bean id="chartdatamanage" class="com.lumiinsight.web.action.analysis.ChartDataAction" scope="prototype"></bean>
+	<bean id="systemInit" class="com.lumiinsight.web.action.SystemInitAction" scope="prototype"></bean>
+	<bean id="privilegeGroupList" class="com.lumiinsight.web.action.privilege.PrivilegeGroupListAction" scope="prototype"></bean>
+	<bean id="privilegeGroupmanage" class="com.lumiinsight.web.action.privilege.PrivilegeGroupManageAction" scope="prototype"></bean>
+	<bean id="uploadfile" class="com.lumiinsight.web.action.uploadfile.UploadFileAction" scope="prototype"></bean>
+	<bean id="uploadfilemanage" class="com.lumiinsight.web.action.uploadfile.UploadfileManageAction" scope="prototype"></bean>
+	
+	<bean id="chartDateServerList" class="com.lumiinsight.web.action.analysis.ChartDataServerListAction" scope="prototype"></bean>
+	<bean id="chartDateServerManage" class="com.lumiinsight.web.action.analysis.ChartDataServerManageAction" scope="prototype"></bean>
+</beans>

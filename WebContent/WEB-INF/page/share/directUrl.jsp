@@ -1,0 +1,3 @@
+<%@ page contentType="text/html;charset=UTF-8"%>
+<%@ include file="/WEB-INF/page/share/taglib.jsp"%>
+<c:redirect url="${directUrl}"/>
